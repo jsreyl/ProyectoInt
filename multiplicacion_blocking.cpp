@@ -3,9 +3,9 @@
 #include <cstdlib>
 #include "papi.h"
 
-const int csize = 32;
+const int csize = 20;
 
-int code_to_be_measured(const double * M1, const double * M2, double * M);
+int code_to_be_measured(const double * M1, const double * M2, double * M, int N);
 
 int main(int argc, char **argv)
 {
@@ -38,30 +38,32 @@ int main(int argc, char **argv)
       printf("retval: %d\n", retval);
       exit(1);
     }
-  code_to_be_measured(A, B, C);
+  code_to_be_measured(A, B, C, N);
   if((retval=PAPI_flops( &real_time, &proc_time, &flpops, &mflops))<PAPI_OK)
     {
       printf("retval: %d\n", retval);
       exit(1);
     }
   //printf("Real_time: %f Proc_time: %f Total flpops: %lld MFLOPS: %f\n", real_time, proc_time,flpops,mflops);
-  std::cout<<N<<" "<<proc_time <<" "<<mflops<<std::endl; //Printing matrix size, cpu time and mfolps.
+  //std::cout<<N<<" "<<proc_time <<" "<<mflops<<std::endl; //Printing matrix size, cpu time and mfolps.
+  std::cout<<N<<std::endl;
   //In theory the Mflops should be normalized as we're not using divison nor any complicated operations.
   
   delete [] A;
-  delete [] AT;
+  delete [] B;
+  delete [] C;
   return 0;
 }
 
-int code_to_be_measured(const double * M1, const double * M2, double * M)
+int code_to_be_measured(const double * M1, const double * M2, double * M, int N)
 {
   // matrix multiplication with blocking
   for (int ii = 0; ii < N; ii+=csize)
     for (int jj = 0; jj < N; jj+=csize)
       for (int kk = 0; kk < N; kk+=csize)
-	for(int i=ii; i<min(N, ii+csize-1);++i)
-	  for(int j = jj; j < min(N;jj+csi<e-1);++j)
-	    for(int j = jj; j < min(N;jj+csi<e-1);++j)
+	for(int i=ii; i < std::min(N, ii+csize-1);++i)
+	  for(int j = jj; j < std::min(N, jj+csize-1);++j)
+	    for(int k = kk; k < std::min(N, kk+csize-1);++j)
 	      M[i*N +j] += M1[i*N + k]*M2[k*N + j];
   return 0;
 }
