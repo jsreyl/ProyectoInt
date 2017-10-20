@@ -38,7 +38,7 @@ std::vector<double> code_to_be_measured(const std::vector<double> M, int N)
     for (int jj = 0; jj < N; jj+=csize)
       for(int i=ii; i<std::min(N, ii+csize);++i)
 	for(int j = jj; j < std::min(N,jj+csize);++j)
-	  MT[i*N +j] = M[j*N + i];
+	  MT[i*N +j] = 2.0*M[j*N + i]; //Multiply by 2.0 so we can calculate floating point operations
   
   return MT;
 }
